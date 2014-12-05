@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="br">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>SISCONA - Controle de Acesso</title>
+
+        <!-- Bootstrap -->
+        <link href="<?= ROOT . LIBS ?>bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        
+        <!-- DataTables -->
+        <link href="<?= ROOT . LIBS ?>DataTables/media/css/datatables.bootstrap.css" rel="stylesheet">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        
+        <style>
+            body {
+                //padding-top: 70px;
+                //background-color: #FFF;
+            }
+            
+            .rowHeader {
+               margin-top: -10px;
+            }
+            
+            .rowForm {
+                padding-top: 10px;
+            }
+            
+            thead, tfoot{
+                background-color: #444;
+                border:2px solid #444;
+                color: #eee;
+            }
+            
+            .table-hover>tbody>tr:hover>td,.table-hover>tbody>tr:hover>th {
+                background-color:#d9edf7;
+            }
+            
+            .btn.btn-sm2 {
+                font-size: 12px;
+                padding:2px 4px;
+                margin-top:-4px;
+                margin-bottom:-2px;
+            }
+            
+            div.dataTables_paginate ul.pagination {
+                margin: -20px 0 0 0;
+                white-space: nowrap;
+            }
+
+            table.dataTable {
+                clear: both;
+                margin-top: 6px !important;
+                margin-bottom: -5px !important;
+                max-width: none !important;
+            }
+            
+            body { font-size: 140%; }
+            div.DTTT { margin-left: 0.5em; float: right; }
+            div.dataTables_wrapper { clear: both; }
+        </style>
+    </head>
+    <body>
+        
+        <div class="container-fluid">
+            <div class="row rowHeader">
+                <div class="container">
+                    <div class="col-md-11">
+                        <h1>SISCONA <small> :: Controle de Acesso</small></h1>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row rowForm">
+                <div class="container">
+                    <div class="row">
+                        <div class="container">
+                            <?php
+                                require_once(VIEW . $GLOBALS['controller'] . DS . 'cadastrar.phtml');
+                            ?>
+                        </div>
+                    </div>
+                    
+                    <div class="row rowForm">
+                        <div class="container">
+                            <div class="box-body table-responsive">
+                                <table id="dinamicTable" class="table table-bordered table-condensed table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>CRACHÁ</th>
+                                            <th>RG</th>
+                                            <th>NOME</th>
+                                            <th>SETOR</th>
+                                            <th>DT ENTRADA</th>
+                                            <th>DT SAÍDA</th>
+                                            <th width="5%">SAÍDA</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                            foreach ($visitantes as $visitante) :
+                                                $dtHrEntrada = explode(' ', $visitante['dt_entrada']);
+                                                $dtEntrada = implode('/', array_reverse(explode('-', $dtHrEntrada[0]))) . ' às ' . $dtHrEntrada[1];
+                                                
+                                                $dtSaida = null;
+                                                if(!is_null($visitante['dt_saida'])) {
+                                                    $dtHrSaida = explode(' ', $visitante['dt_saida']);
+                                                    $dtSaida = implode('/', array_reverse(explode('-', $dtHrSaida[0]))) . ' às ' . $dtHrSaida[1];
+                                                }
+                                        ?>
+                                            <tr>
+                                                <td style="text-align: center"><?php echo $visitante['id']; ?></td>
+                                                <td><?php echo $visitante['cracha']; ?></td>
+                                                <td><?php echo $visitante['rg']; ?></td>
+                                                <td><?php echo $visitante['nome']; ?></td>
+                                                <td><?php echo $visitante['setor']; ?></td>
+                                                <td><?php echo $dtEntrada; ?></td>
+                                                <td><?php echo $dtSaida; ?></td>                                                
+                                                <td align="center">
+                                                    <?php if(is_null($dtSaida)) : ?>
+                                                        <a class="btn btn-sm2 btn-warning" title="Marcar Saída: ID <?php echo $visitante['id']; ?>" 
+                                                           href="<?php echo $GLOBALS['controller']."/liberarVisitante/id/{$visitante['id']}"; ?>">
+                                                            <i class="glyphicon glyphicon-time"></i>
+                                                        </a>
+                                                    <?php endif; ?>
+                                                </td>                                                
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div><!-- /.box-body -->
+                        </div>
+                    </div>                    
+		</div>
+            </div>
+        </div>
+
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="<?= ROOT . LIBS ?>jquery/jquery-2.1.1.min.js"></script>
+        <!-- Include all compiled plugins (below), or include individual files as needed -->
+        <script src="<?= ROOT . LIBS ?>bootstrap/js/bootstrap.min.js"></script>
+        <!-- DataTables -->
+        <script src="<?= ROOT . LIBS ?>DataTables/media/js/jquery.dataTables.min.js"></script>
+        <script src="<?= ROOT . LIBS ?>DataTables/extensions/TableTools/js/dataTables.tableTools.min.js"></script>
+        <script src="<?= ROOT . LIBS ?>DataTables/media/js/datatables.bootstrap.js"></script>
+        
+        <script>
+            $(document).ready(function(){
+    
+                $("#dinamicTable").dataTable({
+                    dom: 'T<"clear">lfrtip',
+                    pageLength: 11,
+                    order: [[ 0, "desc" ]],
+                    tableTools: {
+                        "sSwfPath": "public/libs/DataTables/extensions/TableTools/swf/copy_csv_xls_pdf.swf",
+                        "aButtons": [ 
+                            {
+                                "sExtends": "pdf",
+                                "sTitle": "Visitantes"
+                            },
+                            {
+                                "sExtends": "xls",
+                                "sTitle": "Visitantes"
+                            }
+                        ]
+                    }
+                });
+                
+            });
+        </script>
+    </body>
+</html>

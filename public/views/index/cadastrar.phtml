@@ -1,0 +1,43 @@
+<form role="form" id="form" name="form" action="index/cadastrar" method="POST">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box-body">
+                <div class="form-group">
+                    <label for="rg">RG</label>
+                    <input type="text" class="form-control" id="rg" name="rg" placeholder="RG da Pessoa">
+                </div>
+                <div class="form-group">
+                    <label for="nome">Nome</label>
+                    <input type="text" class="form-control" id="nome" name="nome" placeholder="Nome da Pessoa">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="box-body">
+                <div class="form-group">
+                    <label for="cracha">Crachá</label>
+                    <input type="text" class="form-control" id="cracha" name="cracha" placeholder="Número do Crachá">
+                </div>
+                <div class="form-group">
+                    <label for="setorId">Setor</label>
+                    <select class="form-control" id="setorId" name="setorId">
+                        <option value="">Selecione o Setor</optino>
+                        <?php
+                            foreach ($setores as $key => $value) {
+                                echo "<option value={$value['id']}>{$value['nome']}</optino>";
+                            }                        
+                        ?>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box-footer">
+                <button type="submit" class="btn btn-primary center-block">Dar Entrada</button>
+            </div>
+        </div>
+    </div>
+</form>
